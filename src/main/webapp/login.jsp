@@ -37,7 +37,7 @@
         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
     </form>
     <div class="text-center mt-3">
-        <a href="register.jsp">Créer un compte</a>
+        <a href="registration.jsp">Créer un compte</a>
     </div>
 </div>
 </body>

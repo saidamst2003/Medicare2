@@ -28,7 +28,8 @@
     <h1 class="mb-4">Bienvenue sur Medicare</h1>
     <p class="lead">Système de réservation de rendez-vous médicaux</p>
     <a href="login.jsp" class="btn btn-primary me-3">Se connecter</a>
-    <a href="register.jsp" class="btn btn-outline-dark">S'inscrire</a>
+    <a href="registration.jsp" class="btn btn-outline-dark">S'inscrire</a>
+
 </div>
 </body>
 </html>

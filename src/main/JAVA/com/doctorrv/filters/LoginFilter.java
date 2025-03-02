@@ -7,11 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-/**
- * Filtre pour vérifier si l'utilisateur est connecté avant d'accéder
- * aux pages protégées. Si l'utilisateur n'est pas connecté, il est
- * redirigé vers la page de connexion.
- */
+
 @WebFilter(urlPatterns = {"/doctor/*", "/patient/*", "/appointment/*", "/profile/*"})
 public class LoginFilter implements Filter {
 

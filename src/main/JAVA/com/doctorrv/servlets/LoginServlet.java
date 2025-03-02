@@ -1,6 +1,7 @@
 package com.doctorrv.servlets;
 
-import com.doctorrv.dao.UserDAO;
+
+import com.doctorrv.dao.loginDAO;
 import com.doctorrv.model.User;
 
 import jakarta.servlet.ServletException;
@@ -13,58 +14,48 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-    private UserDAO userDAO;
-
-    @Override
-    public void init() {
-        userDAO = new UserDAO();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Afficher la page de connexion
-        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Récupérer les informations de connexion
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Retrieve login details
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Valider les champs
-        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-            request.setAttribute("error", "Email et mot de passe requis");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
-            return;
-        }
+        System.out.println("Email: " + email);
+        System.out.println("Password: " + password);
 
-        // Tenter l'authentification
-        User user = userDAO.getUserByEmail(email);
+        // Authenticate the user using LoginDao
+        User user = loginDAO.authenticate(email, password);
 
-        if (user == null || !user.getPassword().equals(password)) {
-            // Échec de l'authentification
-            request.setAttribute("error", "Email ou mot de passe incorrect");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
-            return;
-        }
+        if (user != null) {
+            System.out.println("User authenticated: " + user.getFullName() + ", Role: " + user.getRole());
+            // Create a new session or retrieve an existing one
+            HttpSession session = request.getSession(true); // true ensures session is created if it doesn't exist
+            session.setAttribute("id", user.getId());
+            session.setAttribute("full_name", user.getFullName());
+            session.setAttribute("role", user.getRole());
 
-        // Authentification réussie
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
-        session.setAttribute("userId", user.getId());
-        session.setAttribute("userRole", user.getRole());
-        session.setAttribute("userEmail", user.getEmail());
-        session.setAttribute("userName", user.getFullName());
+            System.out.println("Session created with ID: " + session.getId());
+            System.out.println("User logged in: " + user.getFullName());
+            System.out.println("Role: " + user.getRole());
 
-        // Redirection en fonction du rôle
-        if ("doctor".equals(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/doctor/dashboard");
+            // Redirect to the appropriate dashboard based on role
+            if ("patient".equalsIgnoreCase(user.getRole())) {
+                System.out.println(user.getRole());
+                System.out.println("Redirection vers : patientDashboard.jsp");
+                response.sendRedirect("patientDashboard.jsp");
+            } else if ("DOCTOR".equalsIgnoreCase(user.getRole())) {
+                System.out.println("Redirection vers : doctorDashboard.jsp");
+                response.sendRedirect("doctorDashboard.jsp");
+            } else {
+                // Redirect to a default page or an error page if the role is unexpected
+                response.sendRedirect("errorPage.jsp");
+            }
+
         } else {
-            response.sendRedirect(request.getContextPath() + "/patient/dashboard");
+            System.out.println("Authentication failed: User not found");
+            // Authentication failed, redirect back to login page with error message
+            response.sendRedirect("login.jsp?error=1"); // You could also provide a detailed error message here
         }
     }
 }

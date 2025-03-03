@@ -13,8 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-
-@WebFilter({ "/doctorDashboard.jsp" ,"/patientDashboard.jsp"})
+@WebFilter({ "/doctorDashboard.jsp", "/patientDashboard.jsp" })
 public class SessionFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -38,9 +37,18 @@ public class SessionFilter implements Filter {
         System.out.println("Role dans session : " + role);
 
         // Vérification que l'utilisateur est bien authentifié
-        if (userId == null) {
-            System.out.println(" idUser est NULL, redirection vers login.jsp");
+        if (userId == null || role == null) {
+            System.out.println(" idUser ou role est NULL, redirection vers login.jsp");
             res.sendRedirect("login.jsp?error=session");
+            return;
+        }
+
+        // Empêcher un docteur d'accéder au dashboard patient et vice versa
+        if ("doctor".equals(role) && req.getRequestURI().contains("patientDashboard.jsp")) {
+            res.sendRedirect("doctorDashboard.jsp");
+            return;
+        } else if ("patient".equals(role) && req.getRequestURI().contains("doctorDashboard.jsp")) {
+            res.sendRedirect("patientDashboard.jsp");
             return;
         }
 
@@ -48,5 +56,6 @@ public class SessionFilter implements Filter {
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {}
+
     public void destroy() {}
 }

@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 
-@WebFilter(urlPatterns = {"/doctor/*", "/patient/*", "/appointment/*", "/profile/*"})
+@WebFilter(urlPatterns = {"/doctorDashboard/*", "/patientDashboard/*"})
 public class LoginFilter implements Filter {
 
     @Override
@@ -25,7 +25,7 @@ public class LoginFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
 
         // Vérifier si l'utilisateur est connecté
-        boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
+        boolean isLoggedIn = (session != null && session.getAttribute("users") != null);
 
         // URL de la requête
         String requestURI = httpRequest.getRequestURI();
@@ -42,6 +42,7 @@ public class LoginFilter implements Filter {
 
     @Override
     public void destroy() {
+
         // Nettoyage des ressources
     }
 }

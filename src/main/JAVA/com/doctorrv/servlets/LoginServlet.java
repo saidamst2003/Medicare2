@@ -1,9 +1,6 @@
 package com.doctorrv.servlets;
-
-
 import com.doctorrv.dao.loginDAO;
 import com.doctorrv.model.User;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -42,10 +39,10 @@ public class LoginServlet extends HttpServlet {
             // Redirect to the appropriate dashboard based on role
             if ("patient".equalsIgnoreCase(user.getRole())) {
                 System.out.println(user.getRole());
-                System.out.println("Redirection vers : patientDashboard.jsp");
+                System.out.println("Redirection vers : patientDashboard");
                 response.sendRedirect("patientDashboard.jsp");
-            } else if ("DOCTOR".equalsIgnoreCase(user.getRole())) {
-                System.out.println("Redirection vers : doctorDashboard.jsp");
+            } else if ("doctor".equalsIgnoreCase(user.getRole())) {
+                System.out.println("Redirection vers : doctorDashboard");
                 response.sendRedirect("doctorDashboard.jsp");
             } else {
                 // Redirect to a default page or an error page if the role is unexpected

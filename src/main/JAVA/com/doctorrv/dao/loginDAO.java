@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class loginDAO {
     public static User authenticate(String email , String password) {
 
-        String query ="SELECT idUser, fullName,phoneNumber, role FROM user WHERE email = ? AND password = ?";
+        String query ="SELECT id, full_name,phone, role FROM users WHERE email = ? AND password = ?";
         User user = null;
         try {
             Connection connection = UserDAO.getConnection();

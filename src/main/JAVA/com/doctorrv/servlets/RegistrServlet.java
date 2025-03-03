@@ -21,10 +21,10 @@ public class RegistrServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String fullname = request.getParameter("full_name");
+        String fullname = request.getParameter("fullName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phone");
+        String phoneNumber = request.getParameter("phoneNumber");
         String role = request.getParameter("role");
         String speciality = request.getParameter("speciality");  // Only for doctor role
 
@@ -34,6 +34,7 @@ public class RegistrServlet extends HttpServlet {
         user.setPassword(password);
         user.setPhoneNumber(phoneNumber);
         user.setRole(role);
+
 
         // Call the UserDao to insert the user and doctor if the role is "DOCTOR"
         UserDAO userDao = new UserDAO();

@@ -1,72 +1,52 @@
 package com.doctorrv.filters;
 
-import jakarta.servlet.*;
+
+import java.io.IOException;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Date;
 
-@WebFilter(urlPatterns = {"/*"})
+
+@WebFilter({ "/doctorDashboard.jsp" ,"/patientDashboard.jsp"})
 public class SessionFilter implements Filter {
-
-    private static final long MAX_INACTIVE_SESSION_TIME = 30 * 60 * 1000; // 30 minutes
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Initialisation du filtre
-    }
-
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        HttpSession session = req.getSession(false); // Ne crée pas une nouvelle session
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false);
+        System.out.println(" SessionFilter appliqué à : " + req.getRequestURI());
 
-        // URL de la requête
-        String requestURI = httpRequest.getRequestURI();
-        String contextPath = httpRequest.getContextPath();
-
-        // Vérifier si c'est une page publique
-        boolean isPublicPage = requestURI.equals(contextPath + "/login") ||
-                requestURI.equals(contextPath + "/register") ||
-                requestURI.equals(contextPath + "/") ||
-                requestURI.contains("/resources/") ||
-                requestURI.contains("/public/");
-
-        if (session != null) {
-            // Vérifier l'expiration de la session
-            Date currentTime = new Date();
-            long lastAccessTime = session.getLastAccessedTime();
-
-            if (currentTime.getTime() - lastAccessTime > MAX_INACTIVE_SESSION_TIME) {
-                // Session expirée, invalider la session
-                session.invalidate();
-                httpResponse.sendRedirect(contextPath + "/login?expired=true");
-                return;
-            }
-
-            // Rediriger les utilisateurs connectés qui tentent d'accéder aux pages publiques
-            if (isPublicPage && session.getAttribute("user") != null) {
-                String userRole = (String) session.getAttribute("userRole");
-                if ("doctor".equals(userRole)) {
-                    httpResponse.sendRedirect(contextPath + "/doctor/dashboard");
-                } else {
-                    httpResponse.sendRedirect(contextPath + "/patient/dashboard");
-                }
-                return;
-            }
+        if (session == null) {
+            System.out.println(" Aucune session trouvée !");
+            res.sendRedirect("login.jsp?error=session");
+            return;
         }
 
-        // Continuer la chaîne de filtres
+        Object userId = session.getAttribute("id");
+        Object role = session.getAttribute("role");
+
+        System.out.println("Session trouvée : " + session.getId());
+        System.out.println("idUser dans session : " + userId);
+        System.out.println("Role dans session : " + role);
+
+        // Vérification que l'utilisateur est bien authentifié
+        if (userId == null) {
+            System.out.println(" idUser est NULL, redirection vers login.jsp");
+            res.sendRedirect("login.jsp?error=session");
+            return;
+        }
+
         chain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {
-        // Nettoyage des ressources
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void destroy() {}
 }

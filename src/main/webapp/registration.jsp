@@ -24,7 +24,7 @@
 <body>
 <div class="container">
     <h2 class="text-center mb-4">Inscription</h2>
-    <form action="registration.jsp" method="post">
+    <form action="registration" method="post">
         <div class="mb-3">
             <label for="fullName" class="form-label">Nom complet</label>
             <input type="text" class="form-control" id="fullName" name="fullName" required>
@@ -48,13 +48,13 @@
         <div class="mb-3">
             <label for="role" class="form-label">Rôle</label>
             <select class="form-select" id="role" name="role" required>
-                <option value="patient">Patient</option>
-                <option value="doctor">Médecin</option>
+                <option value="patient">patient</option>
+                <option value="doctor">doctor</option>
             </select>
         </div>
-        <div class="mb-3" id="specializationField" style="display: none;">
-            <label for="specialization" class="form-label">Spécialisation</label>
-            <input type="text" class="form-control" id="specialization" name="specialization">
+        <div class="mb-3" id="specialityy" style="display: none;">
+            <label for="speciality" class="form-label">Spécialisation</label>
+            <input type="text" class="form-control" id="speciality" name="speciality">
         </div>
         <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
     </form>
@@ -65,7 +65,7 @@
 
 <script>
     document.getElementById("role").addEventListener("change", function() {
-        var specializationField = document.getElementById("specializationField");
+        var specializationField = document.getElementById("specialityy");
         if (this.value === "doctor") {
             specializationField.style.display = "block";
         } else {

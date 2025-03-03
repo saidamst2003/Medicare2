@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-    private static final String URL = "jdbc:mysql://localhost:3306/doctorrv";
+    private static final String URL = "jdbc:mysql://localhost:3306/DoctorRV";
     private static final String USER = "root";
     private static final String PASSWORD = "123456";
 

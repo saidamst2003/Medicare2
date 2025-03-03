@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 
-@WebFilter(urlPatterns = {"/doctor/*", "/patient/*"})
+@WebFilter(urlPatterns = {"/doctorDashboard/*", "/patientDashboard/*"})
 public class RoleFilter implements Filter {
 
     @Override
@@ -28,16 +28,16 @@ public class RoleFilter implements Filter {
         String requestURI = httpRequest.getRequestURI();
         String contextPath = httpRequest.getContextPath();
 
-        if (session != null && session.getAttribute("userRole") != null) {
-            String userRole = (String) session.getAttribute("userRole");
+        if (session != null && session.getAttribute("role") != null) {
+            String userRole = (String) session.getAttribute("role");
 
-            if (requestURI.startsWith(contextPath + "/doctor/") && !"doctor".equals(userRole)) {
+            if (requestURI.startsWith(contextPath + "/doctorDashboard/") && !"doctor".equals(userRole)) {
                 // Accès non autorisé à la zone médecin
                 httpResponse.sendRedirect(contextPath + "/access-denied");
                 return;
             }
 
-            if (requestURI.startsWith(contextPath + "/patient/") && !"patient".equals(userRole)) {
+            if (requestURI.startsWith(contextPath + "/patientDashboard/") && !"patient".equals(userRole)) {
                 // Accès non autorisé à la zone patient
                 httpResponse.sendRedirect(contextPath + "/access-denied");
                 return;
